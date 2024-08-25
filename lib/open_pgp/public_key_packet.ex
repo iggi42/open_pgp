@@ -105,6 +105,16 @@ defmodule OpenPGP.PublicKeyPacket do
           material: tuple()
         }
 
+  @spec encode(t()) :: binary()
+  def encode(%__MODULE__{ version: 2 }), do: throw(:not_implemented)
+  def encode(%__MODULE__{ version: 3 }), do: throw(:not_implemented)
+  def encode(%__MODULE__{ version: 4 } = input) do
+    timestamp = DateTime.to_unix(input.created_at)
+    {algo_id, _algo_name} = input.algo
+    <<4::8, timestamp::32, algo_id::8>> <> encode_material(algo_id, input.material)
+  end
+
+
   @doc """
   Decode Public Key Packet given input binary.
   Return structured packet and remaining binary.
@@ -135,6 +145,10 @@ defmodule OpenPGP.PublicKeyPacket do
     }
 
     {packet, next}
+  end
+
+  defp encode_material(algo_id, {mod_n, exp_e}) when algo_id in [1, 2, 3] do
+    Util.encode_mpi(mod_n) <> Util.encode_mpi(exp_e)
   end
 
   # Support only RSA as of version 0.5.x

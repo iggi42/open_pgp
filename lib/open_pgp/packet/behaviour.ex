@@ -14,4 +14,7 @@ defmodule OpenPGP.Packet.Behaviour do
   decoded packet and a remainder of an input binary.
   """
   @callback decode(binary()) :: {OpenPGP.any_packet(), binary()}
+
+
+  @callback encode(OpenPGP.any_packet()) :: binary()
 end

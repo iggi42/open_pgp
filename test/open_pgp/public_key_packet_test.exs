@@ -33,4 +33,6 @@ defmodule OpenPGP.PublicKeyPacketTest do
 
     assert "010001" == Base.encode16(exp_e)
   end
+
+  test ".encode/1 encodes a RSA Public-Key packet"
 end
